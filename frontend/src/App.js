@@ -6,13 +6,12 @@ import './App.css';
 
 ChartJS.register(ArcElement, Tooltip, CategoryScale, LinearScale, BarElement);
 
-// --- UPDATE THIS URL AFTER STEP 2 ---
-const BACKEND_URL = "https://quantum-backend-xxx.onrender.com/api"; 
 
+const BACKEND_URL = "https://quantum-backend-v72l.onrender.com/api";
 function App() {
   const [view, setView] = useState('home');
   const [logs, setLogs] = useState([]);
-  const [loadingStep, setLoadingStep] = useState(0);
+  const [loadingStep, setLoadingStep] = useState(0); 
   const [file, setFile] = useState(null);
   const [selectedDataset, setSelectedDataset] = useState("");
 
@@ -34,10 +33,14 @@ function App() {
     try {
       const res = await axios.get(`${BACKEND_URL}/logs`);
       setLogs(res.data);
-    } catch (e) { console.log("Backend offline"); }
+    } catch (e) { 
+        console.log("Backend offline or connection error. Check Render Logs."); 
+    }
   };
 
-  useEffect(() => { if (view === 'logs') fetchLogs(); }, [view]);
+  useEffect(() => { 
+      if (view === 'logs') fetchLogs(); 
+  }, [view]);
 
   const handleAnalysis = async () => {
     setLoadingStep(1);
@@ -55,7 +58,7 @@ function App() {
     } catch (e) {
       clearInterval(interval);
       setLoadingStep(0);
-      alert("Backend Error: Ensure the live Render server is active.");
+      alert("Backend Error: Check if your Render server is waking up (Free tier takes a minute to start).");
     }
   };
 
@@ -69,7 +72,7 @@ function App() {
         <div className="nav-links">
           <a onClick={() => setView('home')} className={view === 'home' ? 'active' : ''}>Analyze Dataset</a>
           <a onClick={() => setView('results')} className={view === 'results' ? 'active' : ''}>Results Dashboard</a>
-          <a onClick={() => setPage('logs')} className={view === 'logs' ? 'active' : ''}>Blockchain Logs</a>
+          <a onClick={() => setView('logs')} className={view === 'logs' ? 'active' : ''}>Blockchain Logs</a>
         </div>
       </nav>
 
@@ -173,6 +176,9 @@ function App() {
 
         {view === 'logs' && (
           <section style={{paddingTop:'120px'}}>
+            <div className="blue-info-alert" style={{background:'rgba(59,130,246,0.05)', border:'1px solid var(--primary)', padding:'15px', borderRadius:'12px', marginBottom:'30px', display:'flex', gap:'15px'}}>
+                <span>ℹ️</span> Every transaction ID represents a unique quantum state overlap calculation.
+            </div>
             <div className="glass-card p-0">
               <table>
                 <thead><tr><th>Transaction ID</th><th>QSVC Result</th><th>Timestamp</th><th>Quantum Hash</th></tr></thead>
@@ -185,6 +191,9 @@ function App() {
                       <td style={{fontSize:'0.7rem', color:'var(--text-dim)', fontFamily:'monospace'}}>{l.hash}</td>
                     </tr>
                   ))}
+                  {logs.length === 0 && (
+                      <tr><td colSpan="4" style={{textAlign:'center', padding:'40px'}}>No records found in cloud database.</td></tr>
+                  )}
                 </tbody>
               </table>
             </div>
