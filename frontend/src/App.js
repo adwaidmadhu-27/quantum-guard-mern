@@ -6,8 +6,8 @@ import './App.css';
 
 ChartJS.register(ArcElement, Tooltip, CategoryScale, LinearScale, BarElement);
 
-
 const BACKEND_URL = "https://quantum-backend-v72l.onrender.com/api";
+
 function App() {
   const [view, setView] = useState('home');
   const [logs, setLogs] = useState([]);
@@ -58,8 +58,15 @@ function App() {
     } catch (e) {
       clearInterval(interval);
       setLoadingStep(0);
-      alert("Backend Error: Check if your Render server is waking up (Free tier takes a minute to start).");
+      alert("Backend Error: Check if your Render server is active (it may take a minute to wake up).");
     }
+  };
+
+  // Helper for Nav clicks
+  const navigate = (e, target) => {
+    e.preventDefault();
+    setView(target);
+    window.scrollTo(0, 0);
   };
 
   return (
@@ -70,9 +77,10 @@ function App() {
           <span>QuantumGuard</span>
         </div>
         <div className="nav-links">
-          <a onClick={() => setView('home')} className={view === 'home' ? 'active' : ''}>Analyze Dataset</a>
-          <a onClick={() => setView('results')} className={view === 'results' ? 'active' : ''}>Results Dashboard</a>
-          <a onClick={() => setView('logs')} className={view === 'logs' ? 'active' : ''}>Blockchain Logs</a>
+          {/* UPDATED NAV LINKS FOR VERCEL COMPLIANCE */}
+          <a href="#!" onClick={(e) => navigate(e, 'home')} className={view === 'home' ? 'active' : ''}>Analyze Dataset</a>
+          <a href="#!" onClick={(e) => navigate(e, 'results')} className={view === 'results' ? 'active' : ''}>Results Dashboard</a>
+          <a href="#!" onClick={(e) => navigate(e, 'logs')} className={view === 'logs' ? 'active' : ''}>Blockchain Logs</a>
         </div>
       </nav>
 
